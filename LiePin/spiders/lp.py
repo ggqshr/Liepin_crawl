@@ -70,7 +70,8 @@ class LpSpider(scrapy.Spider):
             yield Request(
                 url=link['link'],
                 headers=self.headers,
-                callback=parse_other
+                callback=parse_other,
+                dont_filter=True
             )
 
     def _parse_other(self, item, response):
