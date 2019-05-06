@@ -8,7 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-
+from scrapy.log import INFO
 BOT_NAME = 'LiePin'
 
 SPIDER_MODULES = ['LiePin.spiders']
@@ -71,7 +71,7 @@ ITEM_PIPELINES = {
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 # AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-# AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 2
 # The maximum download delay to be set in case of high latencies
 # AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
@@ -88,4 +88,5 @@ ITEM_PIPELINES = {
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-COOKIES_STR = 'ADHOC_MEMBERSHIP_CLIENT_ID1.0=74123651-55ca-1f13-cbed-235d2ad5b8e0; abtest=0; _fecdn_=1; __uuid=1556938836439.76; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1556423952,1556938838; char_captcha=80CD0F96C0A84405D261220D5FC56A36; JSESSIONID=C4ADDECCF5F1BC2CDFC5519D38598EC1; fe_all_localcookie_sessionid=80887-25421-1556939377272; __tlog=1556938836441.92%7C00000000%7CR000000075%7Cs_o_001%7Cs_o_001; __session_seq=14; __uv_seq=14; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1556939378'
+COOKIES_STR = 'abtest=0; _fecdn_=1; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1557126446; __uuid=1557126446670.78; __tlog=1557126446673.74|00000000|00000000|s_o_001|s_o_001; char_captcha=8BF81535C0A84406F661F73705D16489; JSESSIONID=73C45121F9504EA901A21C5A36C8C051; __session_seq=3; __uv_seq=3; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1557126465'
+LOG_LEVEL = INFO

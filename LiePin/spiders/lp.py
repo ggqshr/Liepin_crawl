@@ -23,7 +23,7 @@ class LpSpider(scrapy.Spider):
         "DNT": "1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
-        "Referer": "https://www.liepin.com/zhaopin/?init=-1&headckid=10309442b4fc4250&fromSearchBtn=2&pubTime=1&dqs=&ckid=39d0f06b122df002&degradeFlag=0&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EV6MwPcZ2ne9zYObRj7X8Rg&d_sfrom=search_fp_nvbar&d_ckId=5bbcb19abb610f06d82310563dd69691&d_curPage=0&d_pageSize=40&d_headId=c7ab2f94211c65707db04468969afec4&curPage=99",
+        "Referer": 'https://www.liepin.com/zhaopin/?init=-1&headckid=ebb4af279a07d4be&fromSearchBtn=2&sfrom=click-pc_homepage-centre_searchbox-search_new&ckid=ebb4af279a07d4be&degradeFlag=0&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg~fA9rXquZc5IkJpXC-Ycixw&d_sfrom=search_fp&d_ckId=7cd3a89b67e7261f0646fe4114c38c34&d_curPage=0&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34&curPage=1',
         "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "zh-CN,zh;q=0.9",
     }
@@ -31,7 +31,7 @@ class LpSpider(scrapy.Spider):
     regSpace = re.compile(r'([\s\r\n\t])+')
 
     def start_requests(self):
-        base_url = 'https://www.liepin.com/zhaopin/?init=-1&headckid=10309442b4fc4250&fromSearchBtn=2&pubTime=1&dqs=&ckid=48be21f35417fec6&degradeFlag=0&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EV6MwPcZ2ne9zYObRj7X8Rg&d_sfrom=search_fp_nvbar&d_ckId=5bbcb19abb610f06d82310563dd69691&d_curPage=97&d_pageSize=40&d_headId=c7ab2f94211c65707db04468969afec4&curPage={curr_page}'
+        base_url = 'https://www.liepin.com/zhaopin/?init=-1&headckid=10309442b4fc4250&fromSearchBtn=2&pubTime=1&dqs=&ckid=48be21f35417fec6&degradeFlag=0&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EV6MwPcZ2ne9zYObRj7X8Rg&d_sfrom=search_fp_nvbar&d_ckId=5bbcb19abb610f06d82310563dd69691&d_curPage=97&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34&curPage={curr_page}'
         for page in range(0, 100):
             yield Request(
                 url=base_url.format(curr_page=page),
@@ -55,8 +55,8 @@ class LpSpider(scrapy.Spider):
         item['education'] = salary_place_education_experience[2]
         item['experience'] = salary_place_education_experience[3]
         item['company_name'] = _extrat('//p[@class="company-name"]/a/text()')
-        # todo 将每个项进行解析并去掉\t等符号
-        item['advantage'] = _extrat('//p[@class="temptation clearfix"]')
+        item['advantage'] = response.xpath('//p[@class="temptation clearfix"]')
+        item['advantage'] = ["_".join(node.xpath(".//span/text()").extract()) for node in item['advantage']]
         item['id'] = [base64.b32encode((n + c).encode("utf-8")) for n, c in zip(item['job_name'], item['company_name'])]
         other_info = [self.parse_other(url) for url in item['link']]
         list1 = []
@@ -75,7 +75,7 @@ class LpSpider(scrapy.Spider):
         yield item
 
     def parse_other(self, url):
-        response = requests.get(url)
+        response = requests.get(url,headers=self.headers)
         select = Selector(response)
         job_content = select.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
         company_address = select.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
