@@ -19,9 +19,7 @@ class LiepinPipeline(object):
         self.mongo = self.conn.LiePin.LiePin
 
     def process_item(self, item, spider):
-        all_data = [{key: item[key][index] for key in item.keys()} for index in range(len(item['id']))]
-        for data in all_data:
-            if self.client.sadd("lie_pin_id_set", data['id']) == 0:
-                return item
-            self.mongo.insert_one(data)
+        if self.client.sadd("lie_pin_id_set", item['id']) == 0:
+            return item
+        self.mongo.insert_one(dict(item))
         return item

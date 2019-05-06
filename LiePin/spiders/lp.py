@@ -62,21 +62,23 @@ class LpSpider(scrapy.Spider):
             item['advantage'].append(["领导好"])
         item['id'] = [base64.b32encode((n + c).encode("utf-8")).decode("utf-8") for n, c in
                       zip(item['job_name'], item['company_name'])]
-        other_info = [self.parse_other(url) for url in item['link']]
-        item['company_address'] = [i[0] for i in other_info]
-        item['company_size'] = [i[1] for i in other_info]
-        item['job_content'] = [i[2] for i in other_info]
-        item['company_industry'] = [i[3] for i in other_info]
-        yield item
+        all_data = [{key: item[key][index] for key in item.keys()} for index in range(len(item['id']))]
 
-    def parse_other(self, url):
-        response = requests.get(url, headers=self.headers)
-        select = Selector(response)
-        job_content = select.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
-        company_address = select.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
-        company_size = select.xpath('//ul[@class="new-compintro"]/li[2]/text()').extract()
-        company_industry = select.xpath('//ul[@class="new-compintro"]/li[1]/a/text()').extract()
-        return company_address, company_size, job_content, company_industry
+        for link in all_data:
+            parse_other = partial(self._parse_other, LiepinItem(link))
+            yield Request(
+                url=link['link'],
+                headers=self.headers,
+                callback=parse_other
+            )
+
+
+    def _parse_other(self, item, response):
+        item['job_content'] = response.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
+        item['company_address'] = response.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
+        item['company_size'] = response.xpath('//ul[@class="new-compintro"]/li[2]/text()').extract()
+        item['company_industry'] = response.xpath('//ul[@class="new-compintro"]/li[1]/a/text()').extract()
+        yield item
 
     @property
     def cookies_dict(self):
