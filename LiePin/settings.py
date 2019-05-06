@@ -9,6 +9,7 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 from scrapy.log import INFO
+
 BOT_NAME = 'LiePin'
 
 SPIDER_MODULES = ['LiePin.spiders']
@@ -71,7 +72,7 @@ ITEM_PIPELINES = {
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 # AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 2
+# AUTOTHROTTLE_START_DELAY = 1
 # The maximum download delay to be set in case of high latencies
 # AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
@@ -90,3 +91,11 @@ AUTOTHROTTLE_START_DELAY = 2
 
 COOKIES_STR = 'abtest=0; _fecdn_=1; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1557126446; __uuid=1557126446670.78; __tlog=1557126446673.74|00000000|00000000|s_o_001|s_o_001; char_captcha=8BF81535C0A84406F661F73705D16489; JSESSIONID=73C45121F9504EA901A21C5A36C8C051; __session_seq=3; __uv_seq=3; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1557126465'
 LOG_LEVEL = INFO
+
+REDIS_HOST = "116.56.140.202"
+REDIS_PORT = 6379
+
+MONGODB_HOST = "116.56.140.202"
+MONGODB_PORT = 27017
+
+MODE = "LOCAL" # or YAO

@@ -49,33 +49,28 @@ class LpSpider(scrapy.Spider):
         item['link'] = _extrat('//div[@class="job-info"]/h3/a/@href')
         item['post_time'] = _extrat('//time/@title')
         item['job_name'] = _extrat('//div[@class="job-info"]/h3/a/text()')
-        salary_place_education_experience = _extrat('//p[@class="condition clearfix"]/@title')
-        item['salary'] = salary_place_education_experience[0]
-        item['place'] = salary_place_education_experience[1]
-        item['education'] = salary_place_education_experience[2]
-        item['experience'] = salary_place_education_experience[3]
+        salary_place_education_experience_list = list(
+            map(lambda x: x.split("_"), _extrat('//p[@class="condition clearfix"]/@title')))
+        item['salary'] = [i[0] for i in salary_place_education_experience_list]
+        item['place'] = [i[1] for i in salary_place_education_experience_list]
+        item['education'] = [i[2] for i in salary_place_education_experience_list]
+        item['experience'] = [i[3] for i in salary_place_education_experience_list]
         item['company_name'] = _extrat('//p[@class="company-name"]/a/text()')
         item['advantage'] = response.xpath('//p[@class="temptation clearfix"]')
         item['advantage'] = ["_".join(node.xpath(".//span/text()").extract()) for node in item['advantage']]
-        item['id'] = [base64.b32encode((n + c).encode("utf-8")) for n, c in zip(item['job_name'], item['company_name'])]
+        if item['advantage'] != 40:
+            item['advantage'].append(["领导好"])
+        item['id'] = [base64.b32encode((n + c).encode("utf-8")).decode("utf-8") for n, c in
+                      zip(item['job_name'], item['company_name'])]
         other_info = [self.parse_other(url) for url in item['link']]
-        list1 = []
-        list2 = []
-        list3 = []
-        list4 = []
-        for info in other_info:
-            list1.append(info[0])
-            list2.append(info[1])
-            list3.append(info[2])
-            list4.append(info[3])
-        item['company_address'] = list1
-        item['company_size'] = list2
-        item['job_content'] = list3
-        item['company_industry'] = list4
+        item['company_address'] = [i[0] for i in other_info]
+        item['company_size'] = [i[1] for i in other_info]
+        item['job_content'] = [i[2] for i in other_info]
+        item['company_industry'] = [i[3] for i in other_info]
         yield item
 
     def parse_other(self, url):
-        response = requests.get(url,headers=self.headers)
+        response = requests.get(url, headers=self.headers)
         select = Selector(response)
         job_content = select.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
         company_address = select.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
