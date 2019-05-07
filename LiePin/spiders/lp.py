@@ -62,7 +62,11 @@ class LpSpider(scrapy.Spider):
             item['advantage'].append(["领导好"])
         item['id'] = [base64.b32encode((n + c).encode("utf-8")).decode("utf-8") for n, c in
                       zip(item['job_name'], item['company_name'])]
-        all_data = [{key: item[key][index] for key in item.keys()} for index in range(len(item['id']))]
+        try:
+            all_data = [{key: item[key][index] for key in item.keys()} for index in range(len(item['id']))]
+        except IndexError as e:
+            all_data = [{key: item[key][index] for key in item.keys()} for index in
+                        range(min([len(v) for v in item.values()]))]
 
         for link in all_data:
             parse_other = partial(self._parse_other, LiepinItem(link))

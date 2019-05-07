@@ -52,9 +52,11 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'LiePin.middlewares.LiepinDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    # 'LiePin.middlewares.LiepinDownloaderMiddleware': 543,
+    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
+    "LiePin.MyproxiesSpiderMiddleware.MyproxiesSpiderMiddleware": 125
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -72,7 +74,7 @@ ITEM_PIPELINES = {
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 # AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 2
+AUTOTHROTTLE_START_DELAY = 3
 # The maximum download delay to be set in case of high latencies
 # AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
@@ -89,7 +91,7 @@ AUTOTHROTTLE_START_DELAY = 2
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-COOKIES_STR = 'abtest=0; _fecdn_=1; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1557126446; __uuid=1557126446670.78; __tlog=1557126446673.74|00000000|00000000|s_o_001|s_o_001; char_captcha=8BF81535C0A84406F661F73705D16489; JSESSIONID=73C45121F9504EA901A21C5A36C8C051; __session_seq=3; __uv_seq=3; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1557126465'
+COOKIES_STR = 'ADHOC_MEMBERSHIP_CLIENT_ID1.0=74123651-55ca-1f13-cbed-235d2ad5b8e0; __uuid=1556938836439.76; abtest=0; _fecdn_=1; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1556938838,1557119211,1557140738,1557141780; fe_all_localcookie_sessionid=22547-39953-1557141811159; __tlog=1557141779811.55%7C00000000%7CR000000075%7Cs_o_001%7Cs_o_001; char_captcha=8CFADB68C0A844057FD1A4C8D35C27B6; _mscid=00000000; _uuid=8FA573ABFFA8441814388EB4F51F6DF6; JSESSIONID=49C2508F699F44C795B4EA5D9BD96E6B; __session_seq=22; __uv_seq=6; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1557188220'
 LOG_LEVEL = INFO
 
 REDIS_HOST = "116.56.140.202"
@@ -98,4 +100,14 @@ REDIS_PORT = 6379
 MONGODB_HOST = "116.56.140.202"
 MONGODB_PORT = 27017
 
-MODE = "LOCAL" # or YAO
+MODE = "LOCAL"  # or YAO
+
+IP_POOL = [
+    {"ipaddr": "14.20.235.211:808"},
+    {"ipaddr": "115.171.202.66:9000"},
+    {"ipaddr": "119.57.108.109:53281"},
+    {"ipaddr": "123.139.56.238:9999"},
+    {"ipaddr": "218.66.253.146:8800"},
+    {"ipaddr": "222.74.61.98:53281"},
+    {"ipaddr": "119.57.108.109:53281"}
+]
