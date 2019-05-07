@@ -54,7 +54,7 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     # 'LiePin.middlewares.LiepinDownloaderMiddleware': 543,
-    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
+    # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
     "LiePin.MyproxiesSpiderMiddleware.MyproxiesSpiderMiddleware": 125
 }
 
