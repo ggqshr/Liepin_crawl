@@ -9,6 +9,7 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 from scrapy.log import INFO
+from .UpdateProxy import ProxyClass
 
 BOT_NAME = 'LiePin'
 
@@ -102,12 +103,4 @@ MONGODB_PORT = 27017
 
 MODE = "LOCAL"  # or YAO
 
-IP_POOL = [
-    {"ipaddr": "14.20.235.211:808"},
-    {"ipaddr": "115.171.202.66:9000"},
-    {"ipaddr": "119.57.108.109:53281"},
-    {"ipaddr": "123.139.56.238:9999"},
-    {"ipaddr": "218.66.253.146:8800"},
-    {"ipaddr": "222.74.61.98:53281"},
-    {"ipaddr": "119.57.108.109:53281"}
-]
+IP_POOL = ProxyClass().load_proxy()

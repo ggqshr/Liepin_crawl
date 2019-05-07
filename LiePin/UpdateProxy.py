@@ -32,13 +32,13 @@ class ProxyClass(object):
             'Accept-Encoding': 'gzip, deflate, sdch',
             'Accept-Language': 'zh-CN,zh;q=0.8'
         }
-        self.verify_pro = set()
         self.open_base_url = "https://www.kuaidaili.com/free/intr/{page}/"
         self.Elite_base_url = "https://www.kuaidaili.com/free/inha/{page}/"
-        self.page_range = list(range(1, 5))
+        self.page_range = list(range(1, 2))
         self.proxies = list()
         self.open_proxies()
         self.Elite_proxies()
+        self.verify_pro = set(self.proxies)
 
     def open_proxies(self):
         """
@@ -77,6 +77,7 @@ class ProxyClass(object):
             time.sleep(1)
 
     def verify_proxies(self):
+        self.verify_pro.clear()
         old_queue = Queue()
         new_queue = Queue()
         print("verify ..")
@@ -100,11 +101,13 @@ class ProxyClass(object):
         print('verify_proxies done!')
 
     def save2file(self):
+        print("saving proxies ....")
         with open("proxy.log", "w") as f:
             s = "\t".join(self.verify_pro)
             f.writelines(s)
 
     def load_proxy(self):
+        print("loading proxies ....")
         res_list = None
         with open("proxy.log", "r") as f:
             line = f.readline()
