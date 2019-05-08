@@ -32,7 +32,7 @@ class LpSpider(scrapy.Spider):
 
     def start_requests(self):
         base_url = 'https://www.liepin.com/zhaopin/?init=-1&headckid=10309442b4fc4250&fromSearchBtn=2&pubTime=1&dqs=&ckid=48be21f35417fec6&degradeFlag=0&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EV6MwPcZ2ne9zYObRj7X8Rg&d_sfrom=search_fp_nvbar&d_ckId=5bbcb19abb610f06d82310563dd69691&d_curPage=1000&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34&curPage={curr_page}'
-        for page in range(0, 1000):
+        for page in range(0, 500):
             yield Request(
                 url=base_url.format(curr_page=page),
                 headers=self.headers,
