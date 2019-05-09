@@ -1,2 +1,2 @@
 from .items import LiepinItem
-from .UpdateProxy import ProxyClass
+from . import UpdateProxy

@@ -112,3 +112,10 @@ class ProxyClass(object):
             line = f.readline()
             res_list = line.split("\t")
         return res_list
+
+
+def update_proxy():
+    a = ProxyClass()
+    a.verify_proxies()
+    a.verify_proxies()
+    a.save2file()
