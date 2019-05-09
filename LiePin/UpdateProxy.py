@@ -38,7 +38,7 @@ class ProxyClass(object):
         self.proxies = list()
         self.open_proxies()
         self.Elite_proxies()
-        self.verify_pro = set(self.proxies)
+        self.verify_pro = set()
 
     def open_proxies(self):
         """
@@ -77,7 +77,6 @@ class ProxyClass(object):
             time.sleep(1)
 
     def verify_proxies(self):
-        self.verify_pro.clear()
         old_queue = Queue()
         new_queue = Queue()
         print("verify ..")
@@ -87,7 +86,7 @@ class ProxyClass(object):
         for work in works:
             work.start()
         for o_prox in self.proxies:
-            time.sleep(0.3)
+            time.sleep(1)
             old_queue.put(o_prox)
         for _ in works:
             old_queue.put(0)

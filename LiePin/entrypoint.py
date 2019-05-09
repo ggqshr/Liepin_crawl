@@ -1,5 +1,5 @@
 from scrapy import cmdline
-from .UpdateProxy import ProxyClass
+from LiePin import ProxyClass
 
 a = ProxyClass()
 a.verify_proxies()
