@@ -102,7 +102,7 @@ class ProxyClass(object):
     def save2file(self):
         print("saving proxies ....")
         with open("proxy.log", "w") as f:
-            s = "\t".join(self.verify_pro)
+            s = "\t".join(self.verify_pro if len(self.verify_pro) != 0 else self.proxies)
             f.writelines(s)
 
     def load_proxy(self):
@@ -116,6 +116,7 @@ class ProxyClass(object):
 
 def update_proxy():
     a = ProxyClass()
+    a.verify_proxies()
     a.verify_proxies()
     a.verify_proxies()
     a.save2file()

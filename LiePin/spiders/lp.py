@@ -48,7 +48,7 @@ class LpSpider(scrapy.Spider):
         # inspect_response(response, self)
         item['link'] = _extrat('//div[@class="job-info"]/h3/a/@href')
         item['post_time'] = _extrat('//time/@title')
-        item['job_name'] = _extrat('//div[@class="job-info"]/h3/a/text()')
+        item['job_name'] = [self.replace_all_n(tt) for tt in _extrat('//div[@class="job-info"]/h3/a/text()')]
         salary_place_education_experience_list = list(
             map(lambda x: x.split("_"), _extrat('//p[@class="condition clearfix"]/@title')))
         item['salary'] = [i[0] for i in salary_place_education_experience_list]
@@ -79,6 +79,7 @@ class LpSpider(scrapy.Spider):
 
     def _parse_other(self, item, response):
         item['job_content'] = response.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
+        item['job_content'] = self.replace_all_n(item['job_content'])
         item['company_address'] = response.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
         item['company_size'] = response.xpath('//ul[@class="new-compintro"]/li[2]/text()').extract()
         item['company_industry'] = response.xpath('//ul[@class="new-compintro"]/li[1]/a/text()').extract()
@@ -96,7 +97,10 @@ class LpSpider(scrapy.Spider):
     def replace_all_n(self, text):
         # 以防止提取不到
         try:
-            rel = re.sub(self.regSpace, "", text)
-            return rel
+            if type(text) == str:
+                rel = re.sub(self.regSpace, "", text)
+                return rel
+            elif type(text) == list:
+                return "".join([re.sub(self.regSpace, "", t) for t in text])
         except TypeError as e:
             return "空"
