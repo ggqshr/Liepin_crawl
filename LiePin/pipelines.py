@@ -30,3 +30,4 @@ class LiepinPipeline(object):
     def close_spider(self, spider):
         with open("result.log", "a") as f:
             f.writelines("this time crawl item {} \n".format(self.count))
+            f.flush()
