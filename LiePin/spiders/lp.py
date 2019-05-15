@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import random
+
 import scrapy
 from scrapy import Request, Selector
 from LiePin.settings import COOKIES_STR
@@ -7,6 +9,8 @@ from LiePin import LiepinItem
 from functools import partial
 import requests
 import re
+from LiePin.settings import USER_AGENT_POOL
+from LiePin.data5u import IPPOOL
 
 
 def extrat(response, xpath):
@@ -21,7 +25,7 @@ class LpSpider(scrapy.Spider):
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
         "DNT": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+        "User-Agent": random.choice(USER_AGENT_POOL),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
         "Referer": 'https://www.liepin.com/zhaopin/?init=-1&headckid=ebb4af279a07d4be&fromSearchBtn=2&sfrom=click-pc_homepage-centre_searchbox-search_new&ckid=ebb4af279a07d4be&degradeFlag=0&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg~fA9rXquZc5IkJpXC-Ycixw&d_sfrom=search_fp&d_ckId=7cd3a89b67e7261f0646fe4114c38c34&d_curPage=0&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34&curPage=1',
         "Accept-Encoding": "gzip, deflate, br",
@@ -32,12 +36,13 @@ class LpSpider(scrapy.Spider):
 
     def start_requests(self):
         base_url = 'https://www.liepin.com/zhaopin/?init=-1&headckid=10309442b4fc4250&fromSearchBtn=2&pubTime=1&dqs=&ckid=48be21f35417fec6&degradeFlag=0&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EV6MwPcZ2ne9zYObRj7X8Rg&d_sfrom=search_fp_nvbar&d_ckId=5bbcb19abb610f06d82310563dd69691&d_curPage=1000&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34&curPage={curr_page}'
-        for page in range(0, 500):
+        for page in range(0, 100000):
             yield Request(
                 url=base_url.format(curr_page=page),
                 headers=self.headers,
                 cookies=self.cookies_dict,
                 callback=self.parse,
+                # meta={"proxy": "http://" + random.choice(IPPOOL)}
             )
 
     def parse(self, response):
