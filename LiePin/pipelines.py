@@ -4,6 +4,8 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+from datetime import datetime
+
 from pymongo import MongoClient
 from .settings import REDIS_PORT, REDIS_HOST, MODE, MONGODB_HOST, MONGODB_PORT
 import redis as r
@@ -29,5 +31,5 @@ class LiepinPipeline(object):
 
     def close_spider(self, spider):
         with open("result.log", "a") as f:
-            f.writelines("this time crawl item {} \n".format(self.count))
+            f.writelines("{} crawl item {} \n".format(datetime.now().strftime("%Y.%m.%d"),self.count))
             f.flush()
