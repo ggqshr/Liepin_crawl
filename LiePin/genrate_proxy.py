@@ -8,6 +8,7 @@ Python 3.x
 import requests
 import time
 import threading
+import LiePin.data5u as data
 
 
 # 获取代理IP的线程类
@@ -18,11 +19,11 @@ class GetIpThread(threading.Thread):
         self.apiUrl = apiUrl
 
     def run(self):
-        import LiePin.data5u as data
+
         while True:
             # 获取IP列表
             res = requests.get(self.apiUrl).content.decode()
             # 按照\n分割获取到的IP
-            data.IPPOOL = res.split('\n')
+            data.IPPOOL = res.strip().split('\r\n')
             # 休眠
             time.sleep(self.fetchSecond)

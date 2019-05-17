@@ -17,7 +17,7 @@ class LiepinPipeline(object):
         self.conn = MongoClient(MONGODB_HOST if MODE == 'LOCAL' else LOCAL, MONGODB_PORT)
         if MODE == 'LOCAL':
             self.conn.admin.authenticate("ggqshr", "root")
-        self.mongo = self.conn.LiePin.LiePin1
+        self.mongo = self.conn.LiePin.LiePin
         self.count = 0
 
     def process_item(self, item, spider):

@@ -1,6 +1,6 @@
 import random
 from scrapy import signals
-from .data5u import IPPOOL
+import LiePin.data5u as data
 
 
 class MyproxiesSpiderMiddleware(object):
@@ -9,6 +9,5 @@ class MyproxiesSpiderMiddleware(object):
         self.ip = ip
 
     def process_request(self, request, spider):
-        thisip = random.choice(IPPOOL)
-        print("当前使用IP是：" + thisip)
+        thisip = random.choice(data.IPPOOL)
         request.meta["proxy"] = "http://" + thisip
