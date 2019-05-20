@@ -128,12 +128,13 @@ class LpSpider(scrapy.Spider):
 
         for link in all_data:
             parse_other = partial(self._parse_other, LiepinItem(link))
+            if re.findall(r"^/", link['link']) != []:
+                link['link'] = "https://www.liepin.com" + link['link']
             yield Request(
                 url=link['link'],
                 headers=self.headers,
                 callback=parse_other,
                 dont_filter=True,
-                # meta={"proxy": "http://" + random.choice(IPPOOL)}
             )
 
     def _parse_other(self, item, response):
