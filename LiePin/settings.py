@@ -133,3 +133,18 @@ REDIS_HOST = "116.56.140.202"
 REDIS_PORT = 6379
 
 SCHEDULER_PERSIST = False
+
+from scrapy.utils.log import configure_logging
+import logging
+from logging.handlers import RotatingFileHandler
+from datetime import datetime
+import os
+
+if not os.path.exists("./logs"):
+    os.mkdir('./logs')
+
+configure_logging(install_root_handler=False)
+logging.basicConfig(
+    level=logging.DEBUG,
+    handlers=[RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")),encoding='utf-8')]
+)
