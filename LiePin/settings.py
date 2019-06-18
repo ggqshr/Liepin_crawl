@@ -99,7 +99,7 @@ LOG_LEVEL = INFO
 MONGODB_HOST = "116.56.140.202"
 MONGODB_PORT = 27017
 
-MODE = "LOCAL"  # or YAO
+MODE = "YAO"  # or YAO
 
 IP_POOL = None  # ProxyClass().load_proxy()
 
