@@ -148,3 +148,8 @@ logging.basicConfig(
     level=logging.DEBUG,
     handlers=[RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")),encoding='utf-8')]
 )
+
+from threading import Lock
+lock = Lock()
+
+apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=d460f14ed5ae426e8a7164005c61b9e7&orderno=YZ20195179329mb51zm&returnType=1&count=3"
