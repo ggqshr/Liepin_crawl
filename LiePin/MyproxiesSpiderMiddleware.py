@@ -3,6 +3,8 @@ import random
 import requests
 from scrapy import signals
 from scrapy.http import Response
+from twisted.internet.error import TCPTimedOutError, ConnectionRefusedError, TimeoutError
+from collections import Counter
 
 import LiePin.data5u as data
 from .settings import apiUrl, lock
@@ -14,6 +16,8 @@ class MyproxiesSpiderMiddleware(object):
         self.reset_set = False
         self.bad_ip_set = set()
         self.bad_code_count = 0
+        self.timeOutCount = 0
+        self.time_out_ip = []
 
     def process_request(self, request, spider):
         thisip = random.choice(data.IPPOOL)
@@ -41,7 +45,9 @@ class MyproxiesSpiderMiddleware(object):
             if self.reset_set:
                 self.bad_code_count -= 1
             # 如果ip被封禁，就加入到set中
-            self.bad_ip_set.add(request.meta['proxy'])
+            if not self.reset_set:
+                self.bad_ip_set.add(request.meta['proxy'])
+                spider.logger.info(f"403 ip add to set now set is {self.bad_ip_set}")
 
             # 如果当前set的长度达到和ip池大小相等，且没有加过锁，就重置ip池
             if (len(self.bad_ip_set) == 3 or len(self.bad_ip_set) >= 3) and lock.acquire(blocking=False):
@@ -54,7 +60,8 @@ class MyproxiesSpiderMiddleware(object):
 
                 # 将被封禁的ipset清空，回复初始状态
                 self.bad_ip_set.clear()
-                spider.logger.info("reset ip pool!")
+                spider.logger.info("reset ip pool due to 403")
+                self.timeOutCount = 0
 
             # 如果还有ip可用，将当前的请求换一个代理，重新调度
             thisip = random.choice(data.IPPOOL)
@@ -70,9 +77,45 @@ class MyproxiesSpiderMiddleware(object):
                 self.bad_code_count = 0
                 self.reset_set = False
 
-        if response.status == 408:
+        if response.status == 408 or response.status == 502 or response.status == 503:
             self.bad_ip_set.add(request.meta['proxy'])
             thisip = random.choice(data.IPPOOL)
             request.meta['proxy'] = "http://" + thisip
             return request
         return response
+
+    def process_exception(self, request, exception, spider):
+        if isinstance(exception, (ConnectionRefusedError, TCPTimedOutError, TimeoutError)):
+            self.time_out_ip.append(request.meta['proxy'].replace("http://", ""))
+            self.timeOutCount += 1
+
+            spider.logger.info(f"get timeout {self.timeOutCount}")
+
+            # 当失败不是很多的时候，将失败较多的ip去掉，提高效率,并把去掉的ip加入到set中
+            if self.timeOutCount % 5 == 0:
+                spider.logger.info(f"remove bad ip {request.meta['proxy']} and the bad_ip_set is {self.bad_ip_set}")
+                count_ip = Counter(self.time_out_ip)
+                bad_ip = count_ip.most_common(1)[0][0]
+                if bad_ip in data.IPPOOL:
+                    self.bad_ip_set.add(request.meta['proxy'])
+                    data.IPPOOL.remove(count_ip.most_common(1)[0][0])
+                    self.time_out_ip.clear()
+
+            # 当失败非常多的时候，就需要重置代理词
+            if self.timeOutCount % 20 == 0 and lock.acquire(blocking=False):
+                self.reset_set = True  # 改标记表明已经重置了ip
+
+                # 重置Ip池
+                res = requests.get(apiUrl).content.decode()
+                # 按照\n分割获取到的IP
+                data.IPPOOL = res.strip().split('\r\n')
+
+                # 将被封禁的ipset清空，回复初始状态
+                self.bad_ip_set.clear()
+                spider.logger.info("reset ip pool due to bad network")
+                self.timeOutCount = 0
+
+        spider.logger.warn(f"{exception}")
+        thisip = random.choice(data.IPPOOL)
+        request.meta['proxy'] = "http://" + thisip
+        return request
