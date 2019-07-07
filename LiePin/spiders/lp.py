@@ -88,8 +88,8 @@ class LpSpider(scrapy.Spider):
             'https://www.liepin.com/zhaopin/?init=-1&headckid=4455a4b08412aed8&flushckid=1&fromSearchBtn=2&dqs=&ckid=0cbf35e16878cb04&degradeFlag=0&subIndustry=&curPage=1&industryType=industry_12&industries=390&sfrom=click-pc_homepage-centre_searchbox-search_new&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg~fA9rXquZc5IkJpXC-Ycixw&d_sfrom=search_fp&d_ckId=7461319ba6fa03100a977533628c700c&d_curPage=0&d_pageSize=40&d_headId=c51883a4d74dd1e26f2043eeacb316fd&curPage={curr_page}&pubTime=1',
             'https://www.liepin.com/zhaopin/?init=-1&headckid=4455a4b08412aed8&flushckid=1&fromSearchBtn=2&dqs=&ckid=cd630fee37b5fa17&degradeFlag=0&subIndustry=&curPage=1&industryType=industry_12&industries=410&sfrom=click-pc_homepage-centre_searchbox-search_new&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg~S3BhLEBCVHn14N5rs6Btkw&d_sfrom=search_fp&d_ckId=3067091fc5a60be9c0a8dbf725c85627&d_curPage=0&d_pageSize=40&d_headId=c51883a4d74dd1e26f2043eeacb316fd&curPage={curr_page}&pubTime=1',
             'https://www.liepin.com/zhaopin/?init=-1&headckid=4455a4b08412aed8&flushckid=1&fromSearchBtn=2&dqs=&ckid=b702f14b50c87838&degradeFlag=0&subIndustry=&curPage=1&industryType=industry_12&industries=400&sfrom=click-pc_homepage-centre_searchbox-search_new&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg~Ah8KnpyRVP7cwAAdP6OyEw&d_sfrom=search_fp&d_ckId=f0cf37fe4c928b425e6fc9abc43da59f&d_curPage=0&d_pageSize=40&d_headId=c51883a4d74dd1e26f2043eeacb316fd&curPage={curr_page}&pubTime=1']
-        for p in base_url:
-            for page in range(0, 200):
+        for page in range(0, 200):
+            for p in base_url:
                 yield Request(
                     url=p.format(curr_page=page),
                     headers=self.headers,
@@ -97,6 +97,8 @@ class LpSpider(scrapy.Spider):
                     callback=self.parse,
                     # meta={"proxy": "http://" + random.choice(IPPOOL)}
                 )
+
+
 
     def parse(self, response):
 
