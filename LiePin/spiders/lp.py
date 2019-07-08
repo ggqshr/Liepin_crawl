@@ -98,8 +98,6 @@ class LpSpider(scrapy.Spider):
                     # meta={"proxy": "http://" + random.choice(IPPOOL)}
                 )
 
-
-
     def parse(self, response):
 
         _extrat = partial(extrat, response)
@@ -120,8 +118,8 @@ class LpSpider(scrapy.Spider):
         item['advantage'] = ["_".join(node.xpath(".//span/text()").extract()) for node in item['advantage']]
         if item['advantage'] != 40:
             item['advantage'].append(["领导好"])
-        item['id'] = [base64.b32encode((n + c).encode("utf-8")).decode("utf-8") for n, c in
-                      zip(item['job_name'], item['company_name'])]
+        item['id'] = [base64.b32encode((n + c + t).encode("utf-8")).decode("utf-8") for n, c, t in
+                      zip(item['job_name'], item['company_name'], item['post_time'])]
         try:
             all_data = [{key: item[key][index] for key in item.keys()} for index in range(len(item['id']))]
         except IndexError as e:
