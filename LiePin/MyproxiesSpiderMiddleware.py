@@ -3,7 +3,7 @@ import random
 import requests
 from scrapy import signals
 from scrapy.http import Response
-from twisted.internet.error import TCPTimedOutError, ConnectionRefusedError, TimeoutError
+from twisted.internet.error import TCPTimedOutError, ConnectionRefusedError, TimeoutError, ConnectionLost
 from collections import Counter
 
 import LiePin.data5u as data
@@ -85,7 +85,7 @@ class MyproxiesSpiderMiddleware(object):
         return response
 
     def process_exception(self, request, exception, spider):
-        if isinstance(exception, (ConnectionRefusedError, TCPTimedOutError, TimeoutError)):
+        if isinstance(exception, (ConnectionRefusedError, TCPTimedOutError, TimeoutError,ConnectionLost)):
             self.time_out_ip.append(request.meta['proxy'].replace("http://", ""))
             self.timeOutCount += 1
 
