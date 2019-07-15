@@ -61,9 +61,10 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
+EXTENSIONS = {
+   'scrapy.extensions.telnet.TelnetConsole': None,
+    'LiePin.entension.send_mail.SendMail':500,
+}
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
@@ -155,3 +156,10 @@ lock = Lock()
 apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=d460f14ed5ae426e8a7164005c61b9e7&orderno=YZ20195179329mb51zm&returnType=1&count=3"
 
 RETRY_ENABLED = False
+
+# 和邮件相关
+MYEXT_ENABLED = True
+MAIL_HOST = 'smtp.qq.com'
+MAIL_PORT = 465
+MAIL_USER = '942490944@qq.com'
+MAIL_PASS = 'ijmbixectujobeei'
