@@ -9,6 +9,7 @@ from collections import Counter
 import LiePin.data5u as data
 from .settings import apiUrl, lock
 
+
 class MyproxiesSpiderMiddleware(object):
 
     def __init__(self, ip=''):
@@ -22,7 +23,6 @@ class MyproxiesSpiderMiddleware(object):
     def process_request(self, request, spider):
         thisip = random.choice(data.IPPOOL)
         request.meta["proxy"] = "http://" + thisip
-
 
     def process_response(self, request, response: Response, spider):
         """
@@ -85,7 +85,7 @@ class MyproxiesSpiderMiddleware(object):
         return response
 
     def process_exception(self, request, exception, spider):
-        if isinstance(exception, (ConnectionRefusedError, TCPTimedOutError, TimeoutError,ConnectionLost)):
+        if isinstance(exception, (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost)):
             self.time_out_ip.append(request.meta['proxy'].replace("http://", ""))
             self.timeOutCount += 1
 
@@ -99,6 +99,10 @@ class MyproxiesSpiderMiddleware(object):
                 if bad_ip in data.IPPOOL:
                     self.bad_ip_set.add(request.meta['proxy'])
                     data.IPPOOL.remove(count_ip.most_common(1)[0][0])
+                    if len(data.IPPOOL) == 0 and lock.locked():
+                        lock.release()
+                        self.bad_code_count = 0
+                        self.reset_set = False
                     self.time_out_ip.clear()
 
             # 当失败非常多的时候，就需要重置代理词
