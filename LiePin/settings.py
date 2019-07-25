@@ -10,6 +10,7 @@
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 from scrapy.log import INFO
 from .UpdateProxy import ProxyClass
+import pickle
 
 BOT_NAME = 'LiePin'
 
@@ -62,8 +63,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-   'scrapy.extensions.telnet.TelnetConsole': None,
-    'LiePin.entension.send_mail.SendMail':500,
+    'scrapy.extensions.telnet.TelnetConsole': None,
+    'LiePin.entension.send_mail.SendMail': 500,
 }
 
 # Configure item pipelines
@@ -100,7 +101,7 @@ LOG_LEVEL = INFO
 MONGODB_HOST = "116.56.140.202"
 MONGODB_PORT = 27017
 
-MODE = "LOCAL"  # or YAO
+MODE = "YAO"  # or YAO
 
 IP_POOL = None  # ProxyClass().load_proxy()
 
@@ -147,10 +148,12 @@ if not os.path.exists("./logs"):
 configure_logging(install_root_handler=False)
 logging.basicConfig(
     level=logging.DEBUG,
-    handlers=[RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")),encoding='utf-8')]
+    handlers=[
+        RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")), encoding='utf-8')]
 )
 
 from threading import Lock
+
 lock = Lock()
 
 apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=d460f14ed5ae426e8a7164005c61b9e7&orderno=YZ20195179329mb51zm&returnType=1&count=3"
@@ -163,3 +166,6 @@ MAIL_HOST = 'smtp.qq.com'
 MAIL_PORT = 465
 MAIL_USER = '942490944@qq.com'
 MAIL_PASS = 'ijmbixectujobeei'
+
+with open("lpcity_data.data", 'rb') as f:
+    city_code_list = pickle.load(f)
