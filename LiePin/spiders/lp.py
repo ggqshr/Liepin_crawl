@@ -73,6 +73,7 @@ class LpSpider(scrapy.Spider):
                 headers=self.headers,
                 cookies=self.cookies_dict,
                 callback=self.parse,
+                priority=3,
             )
 
     def parse_by_city_area(self, response):
@@ -84,23 +85,33 @@ class LpSpider(scrapy.Spider):
         result_count = response.xpath("//p[@class='result-count']/em/text()").extract_first()  # 获得当前结果的总数
         if result_count == "10000+":
             all_area = response.xpath("//dd[@data-param='dqs']//a")
-            all_area_url = []
-            for url in all_area:
-                this_url = url.xpath("./@href").extract_first()
-                all_area_url.append("https://www.liepin.com" + this_url)
-            for url in all_area_url:
+            if all_area == []:
                 yield Request(
-                    url=url,
+                    url=response.url,
                     headers=self.headers,
                     cookies=self.cookies_dict,
-                    callback=self.parse_by_money,
+                    callback=self.parse,
+                    priority=3,
                 )
+            else :
+                all_area_url = []
+                for url in all_area:
+                    this_url = url.xpath("./@href").extract_first()
+                    all_area_url.append("https://www.liepin.com" + this_url)
+                for url in all_area_url:
+                    yield Request(
+                        url=url,
+                        headers=self.headers,
+                        cookies=self.cookies_dict,
+                        callback=self.parse_by_money,
+                    )
         else:
             yield Request(
                 url=response.url,
                 headers=self.headers,
                 cookies=self.cookies_dict,
                 callback=self.parse,
+                priority=3,
             )
 
     def parse_by_money(self, response):
@@ -123,6 +134,7 @@ class LpSpider(scrapy.Spider):
                         headers=self.headers,
                         cookies=self.cookies_dict,
                         callback=self.parse,
+                        priority=3,
                     )
         else:
             yield Request(
@@ -130,6 +142,7 @@ class LpSpider(scrapy.Spider):
                 headers=self.headers,
                 cookies=self.cookies_dict,
                 callback=self.parse,
+                priority=3,
             )
 
     def parse(self, response):
@@ -169,6 +182,7 @@ class LpSpider(scrapy.Spider):
                 headers=self.headers,
                 callback=parse_other,
                 dont_filter=True,
+                priority=3,
             )
         # 如果下一页存在，就继续爬取下一页
         tag_a = response.xpath("//a[text()='下一页']")  # 获得下一页的a标签
@@ -179,6 +193,7 @@ class LpSpider(scrapy.Spider):
                 headers=self.headers,
                 cookies=self.cookies_dict,
                 callback=self.parse,
+                priority=2,
             )
 
     def _parse_other(self, item, response):
