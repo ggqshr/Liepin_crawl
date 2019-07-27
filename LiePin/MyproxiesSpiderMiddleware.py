@@ -38,7 +38,7 @@ class MyproxiesSpiderMiddleware(object):
         """
         # 用来输出状态码
         if response.status != 200:
-            spider.logger.info(response.status)
+            spider.logger.info(f'{response.status},{response.url}')
         # 如果ip已被封禁，就采取措施
         if response.status == 403:
             # 如果已经重置过ip，在重置ip之前的所有的403请求都会让计数减少
@@ -119,7 +119,7 @@ class MyproxiesSpiderMiddleware(object):
                 spider.logger.info("reset ip pool due to bad network")
                 self.timeOutCount = 0
 
-        spider.logger.warn(f"{exception}")
+        spider.logger.warn(f"{exception},{request.url}")
         thisip = random.choice(data.IPPOOL)
         request.meta['proxy'] = "http://" + thisip
         return request
