@@ -10,6 +10,7 @@
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 from scrapy.log import INFO
 from .UpdateProxy import ProxyClass
+import pickle
 
 BOT_NAME = 'LiePin'
 
@@ -61,9 +62,10 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
+EXTENSIONS = {
+    'scrapy.extensions.telnet.TelnetConsole': None,
+    'LiePin.entension.send_mail.SendMail': 500,
+}
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
@@ -99,7 +101,7 @@ LOG_LEVEL = INFO
 MONGODB_HOST = "116.56.140.202"
 MONGODB_PORT = 27017
 
-MODE = "LOCAL"  # or YAO
+MODE = "YAO"  # or YAO
 
 IP_POOL = None  # ProxyClass().load_proxy()
 
@@ -133,3 +135,37 @@ REDIS_HOST = "116.56.140.202"
 REDIS_PORT = 6379
 
 SCHEDULER_PERSIST = False
+
+from scrapy.utils.log import configure_logging
+import logging
+from logging.handlers import RotatingFileHandler
+from datetime import datetime
+import os
+
+if not os.path.exists("./logs"):
+    os.mkdir('./logs')
+
+configure_logging(install_root_handler=False)
+logging.basicConfig(
+    level=logging.DEBUG,
+    handlers=[
+        RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")), encoding='utf-8')]
+)
+
+from threading import Lock
+
+lock = Lock()
+
+apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=d460f14ed5ae426e8a7164005c61b9e7&orderno=YZ20195179329mb51zm&returnType=1&count=3"
+
+RETRY_ENABLED = False
+
+# 和邮件相关
+MYEXT_ENABLED = True
+MAIL_HOST = 'smtp.qq.com'
+MAIL_PORT = 465
+MAIL_USER = '942490944@qq.com'
+MAIL_PASS = 'ijmbixectujobeei'
+
+with open("lpcity_data.data", 'rb') as f:
+    city_code_list = pickle.load(f)
