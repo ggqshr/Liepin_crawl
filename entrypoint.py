@@ -7,8 +7,6 @@ import time
 from LiePin.settings import apiUrl
 import LiePin.data5u as data
 
-# 获取IP的API接口
-apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20195179329mb51zm&returnType=1&count=5"
 # 获取IP时间间隔，建议为5秒
 # fetchSecond = 300
 # # 开始自动获取IP
