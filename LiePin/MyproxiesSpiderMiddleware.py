@@ -25,17 +25,6 @@ class MyproxiesSpiderMiddleware(object):
         request.meta["proxy"] = "http://" + ip_pool.get_ip()
 
     def process_response(self, request, response: Response, spider):
-        """
-        整体思想是使用锁来控制，但是不能在重置成功后立马释放锁，因为请求队列中还有请求在使用重置ip池之前的ip，
-        这些请求在释放了锁之后，也可以进入到if里，从而会出现异常
-        现在的办法是使用一个计数器和一个标志位，在重置之后设置一下标志位，现在估计是在将队列中使用之前代理的请求消耗完后
-        再释放锁，每一个403请求会让计数减少，而重置完之后的每一次200的请求会让计数器增加，现在是让计数器等于最大线程数的时候释放锁，
-        就解决了之前的问题 perfect!
-        :param request:
-        :param response:
-        :param spider:
-        :return:
-        """
         # 用来输出状态码
         if response.status != 200:
             spider.logger.info(f'{response.status},{response.url}')

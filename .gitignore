@@ -3,6 +3,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 LiePin/__pycache__
+LiePin/spiders/__pycache__/
 *.py[cod]
 *$py.class
 *.pyc
