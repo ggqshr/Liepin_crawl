@@ -8,6 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+from proxy_pool import IpPool
 from scrapy.log import INFO
 from .UpdateProxy import ProxyClass
 import pickle
@@ -101,7 +102,7 @@ LOG_LEVEL = INFO
 MONGODB_HOST = "116.56.140.202"
 MONGODB_PORT = 27017
 
-MODE = "YAO"  # or YAO
+MODE = "LOCAL"  # or YAO
 
 IP_POOL = None  # ProxyClass().load_proxy()
 
@@ -152,12 +153,10 @@ logging.basicConfig(
         RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")), encoding='utf-8')]
 )
 
-from threading import Lock
 
-lock = Lock()
-
-apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20195179329mb51zm&returnType=1&count=5"
-
+apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno" \
+         "=YZ20195179329mb51zm&returnType=2&count=3 "
+ip_pool = IpPool(apiUrl)
 RETRY_ENABLED = False
 
 # 和邮件相关
