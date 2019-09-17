@@ -1,7 +1,6 @@
 import logging
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
-from scrapy.xlib.pydispatch import dispatcher
 import scrapy.spiders
 from scrapy.mail import MailSender
 
@@ -10,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 class SendMail(object):
     def __init__(self, sender):
-        dispatcher.connect(self.close, signals.spider_closed)
         self.sender = sender
 
     @classmethod
@@ -26,6 +24,7 @@ class SendMail(object):
         sender = MailSender(mail_host, mail_user, mail_user, mail_pass, mail_port, False,
                             True)  # 由于这里邮件的发送者和邮件账户是同一个就都写了mail_user了
         h = cls(sender)
+        crawler.signals.connect(h.close, signals.spider_closed)
         return h
 
     def close(self, spider: scrapy.spiders, reason):
