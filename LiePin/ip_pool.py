@@ -1,7 +1,7 @@
 import requests
 import json
 import logging
-import time
+from time import sleep
 import random
 import threading
 from collections import Counter
@@ -21,6 +21,16 @@ class IpPool(object):
         self.cond = threading.Condition()
         self.lock = threading.Lock()
 
+    def start(self):
+        res = self._request_ip()
+        while res != REQUEST_SUCCESS:
+            if res == REQUEST_TOO_QUICK:
+                sleep(5)
+                res = self._request_ip()
+                continue
+            if res == REQUEST_REACH_MAX:
+                raise ReachMaxException()
+
     def _request_ip(self):
         res = requests.get(self.api_url).content.decode()  # 请求ip
         res = json.loads(res)  # 解析成字典
@@ -30,6 +40,7 @@ class IpPool(object):
                 ip_port_list = res['RESULT']
                 self.ip_pool = set([f"{ll['ip']}:{ll['port']}" for ll in ip_port_list])
                 self.cond.notify_all()
+                logging.info("完成请求")
                 return REQUEST_SUCCESS
         elif res['ERRORCODE'] in ["10036", "10038", "10055"]:
             logging.info("提取频率过高")
@@ -48,7 +59,8 @@ class IpPool(object):
         """
         with self.cond:
             self.cond.wait_for(self._has_ip)
-            return random.choice(self.ip_pool)
+            return random.choice(list(self.ip_pool))
+
 
     def report_baned_ip(self, ip):
         """
@@ -58,8 +70,10 @@ class IpPool(object):
         :param ip:
         :return:
         """
+        logging.info(f"remove {ip} from pool!")
         self.ip_pool_back_up.add(ip)
         self.ip_pool.discard(ip)
+        logging.info(f"now the pool is {self.ip_pool}")
         if len(self.ip_pool) == 0 and self.lock.acquire(blocking=False) and ip in self.ip_pool_back_up:
             res = self._request_ip()
             while res != REQUEST_SUCCESS:
@@ -81,11 +95,14 @@ class IpPool(object):
         :param ip:
         :return:
         """
+        logging.warning(f"bad net ip {ip}")
         self.bad_net_ip_count.append(ip)  # 将其加入到集合中
         count_list = Counter(self.bad_net_ip_count)
         most_common_item = count_list.most_common(1)[0]
-        if most_common_item[1] == 10:
-            self.report_bad_net_ip(most_common_item[0])
+        logging.info(f"the baddest net ip is {most_common_item}")
+        if most_common_item[1] == 5:
+            self.bad_net_ip_count = [ip for ip in self.bad_net_ip_count if ip != most_common_item[0]]
+            self.report_baned_ip(most_common_item[0])
 
 
 class ReachMaxException(Exception):
