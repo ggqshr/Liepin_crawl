@@ -37,7 +37,7 @@ class MyproxiesSpiderMiddleware(object):
             return request
 
         if response.status == 408 or response.status == 502 or response.status == 503:
-            ip_pool.report_bad_net_ip(this_res_proxy)
+            ip_pool.report_baned_ip(this_res_proxy)
             request.meta['proxy'] = "http://" + ip_pool.get_ip()
             return request
         return response
@@ -50,7 +50,7 @@ class MyproxiesSpiderMiddleware(object):
                       (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived)):
             this_bad_ip = request.meta['proxy'].replace("http://", "")
             ip_pool.report_bad_net_ip(this_bad_ip)
-        spider.logger.debug(f"{type(exception)} {exception},{request.url}")
+        spider.logger.warn(f"{type(exception)} {exception},{request.url}")
         thisip = ip_pool.get_ip()
         request.meta['proxy'] = "http://" + thisip
         return request
