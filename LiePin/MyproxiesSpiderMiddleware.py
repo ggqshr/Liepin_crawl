@@ -8,7 +8,7 @@ from twisted.web.client import ResponseNeverReceived
 from collections import Counter
 
 import LiePin.data5u as data
-from build.lib.LiePin.ip_pool import ReachMaxException
+from proxy_pool.ip_pool import ReachMaxException
 from .settings import apiUrl, ip_pool
 
 
