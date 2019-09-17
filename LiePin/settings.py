@@ -9,7 +9,7 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 from proxy_pool import IpPool
-from scrapy.log import INFO
+from logging import INFO
 from .UpdateProxy import ProxyClass
 import pickle
 
