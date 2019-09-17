@@ -8,9 +8,8 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+from proxy_pool import IpPool
 from scrapy.log import INFO
-
-from LiePin.ip_pool import IpPool
 from .UpdateProxy import ProxyClass
 import pickle
 
@@ -155,7 +154,8 @@ logging.basicConfig(
 )
 
 
-apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20195179329mb51zm&returnType=2&count=3"
+apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno" \
+         "=YZ20195179329mb51zm&returnType=2&count=3 "
 ip_pool = IpPool(apiUrl)
 RETRY_ENABLED = False
 
