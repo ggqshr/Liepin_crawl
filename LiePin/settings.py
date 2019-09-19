@@ -154,8 +154,7 @@ logging.basicConfig(
 )
 
 
-apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno" \
-         "=YZ20195179329mb51zm&returnType=2&count=3 "
+apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ201991877013TnRFh&returnType=2&count=3"
 ip_pool = IpPool(apiUrl)
 RETRY_ENABLED = False
 
