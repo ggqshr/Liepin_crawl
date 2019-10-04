@@ -167,3 +167,5 @@ MAIL_PASS = 'ijmbixectujobeei'
 
 with open("lpcity_data.data", 'rb') as f:
     city_code_list = pickle.load(f)
+
+CLOSESPIDER_TIMEOUT = 169200
