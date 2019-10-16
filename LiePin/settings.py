@@ -8,10 +8,17 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-from proxy_pool import IpPool
-from logging import INFO
-from .UpdateProxy import ProxyClass
+from logging.config import dictConfig, fileConfig
+
+import yaml
+from proxy_pool import XunProxy
+from logging import INFO, DEBUG
 import pickle
+from scrapy.utils.log import configure_logging
+import logging
+from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
+from datetime import datetime
+import os
 
 BOT_NAME = 'LiePin'
 
@@ -137,12 +144,6 @@ REDIS_PORT = 6379
 
 SCHEDULER_PERSIST = False
 
-from scrapy.utils.log import configure_logging
-import logging
-from logging.handlers import RotatingFileHandler
-from datetime import datetime
-import os
-
 if not os.path.exists("./logs"):
     os.mkdir('./logs')
 
@@ -150,12 +151,17 @@ configure_logging(install_root_handler=False)
 logging.basicConfig(
     level=logging.DEBUG,
     handlers=[
-        RotatingFileHandler(filename='logs/Liepin{}.log'.format(datetime.now().strftime("%Y.%m.%d")), encoding='utf-8')]
+        TimedRotatingFileHandler(filename='logs/LiePin.log', encoding='utf-8', when="D", interval=1)]
 )
 
+<<<<<<< HEAD
 
 apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20196121637TQppQw&returnType=2&count=3"
 ip_pool = IpPool(apiUrl)
+=======
+apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ201991877013TnRFh&returnType=2&count=3"
+ip_pool = XunProxy(apiUrl)
+>>>>>>> 1e62a66e7c5449a4c1d18a26ab4f1a8c36ea0aaa
 RETRY_ENABLED = False
 
 # 和邮件相关
@@ -167,3 +173,5 @@ MAIL_PASS = 'ijmbixectujobeei'
 
 with open("lpcity_data.data", 'rb') as f:
     city_code_list = pickle.load(f)
+
+CLOSESPIDER_TIMEOUT = 169200
