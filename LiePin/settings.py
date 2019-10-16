@@ -154,14 +154,8 @@ logging.basicConfig(
         TimedRotatingFileHandler(filename='logs/LiePin.log', encoding='utf-8', when="D", interval=1)]
 )
 
-<<<<<<< HEAD
-
 apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20196121637TQppQw&returnType=2&count=3"
-ip_pool = IpPool(apiUrl)
-=======
-apiUrl = "http://api.xdaili.cn/xdaili-api//greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ201991877013TnRFh&returnType=2&count=3"
 ip_pool = XunProxy(apiUrl)
->>>>>>> 1e62a66e7c5449a4c1d18a26ab4f1a8c36ea0aaa
 RETRY_ENABLED = False
 
 # 和邮件相关
