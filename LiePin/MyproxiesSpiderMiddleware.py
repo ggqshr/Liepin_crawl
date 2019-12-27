@@ -2,6 +2,7 @@ import random
 
 import requests
 from scrapy import signals
+from scrapy.exceptions import IgnoreRequest
 from scrapy.http import Response
 from twisted.internet.error import TCPTimedOutError, ConnectionRefusedError, TimeoutError, ConnectionLost
 from twisted.web.client import ResponseNeverReceived
@@ -26,6 +27,8 @@ class MyproxiesSpiderMiddleware(object):
 
     def process_response(self, request, response: Response, spider):
         this_res_proxy = request.meta['proxy'].replace("http://", "")
+        if response.status == 404:
+            raise IgnoreRequest
         # 用来输出状态码
         if response.status != 200:
             spider.logger.info(f'{response.status},{response.url}')
@@ -50,7 +53,7 @@ class MyproxiesSpiderMiddleware(object):
                       (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived)):
             this_bad_ip = request.meta['proxy'].replace("http://", "")
             ip_pool.report_bad_net_ip(this_bad_ip)
-        spider.logger.warn(f"{type(exception)} {exception},{request.url}")
+        spider.logger.debug(f"{type(exception)} {exception},{request.url}")
         thisip = ip_pool.get_ip()
         request.meta['proxy'] = "http://" + thisip
         return request
