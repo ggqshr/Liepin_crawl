@@ -27,7 +27,7 @@ class MyproxiesSpiderMiddleware(object):
 
     def process_response(self, request, response: Response, spider):
         this_res_proxy = request.meta['proxy'].replace("http://", "")
-        if response.status == 404:
+        if response.status == 404 or response.status == 400:
             raise IgnoreRequest
         # 用来输出状态码
         if response.status != 200:
