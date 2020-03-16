@@ -27,19 +27,12 @@ class MyproxiesSpiderMiddleware(object):
 
     def process_response(self, request, response: Response, spider):
         this_res_proxy = request.meta['proxy'].replace("http://", "")
-        if response.status == 404 or response.status == 400:
+        if response.status == 404:
             raise IgnoreRequest
         # 用来输出状态码
         if response.status != 200:
             spider.logger.info(f'{response.status},{response.url}')
-        # 如果ip已被封禁，就采取措施
-        if response.status == 403:
-            ip_pool.report_baned_ip(this_res_proxy)
-            thisip = ip_pool.get_ip()
-            request.meta['proxy'] = "http://" + thisip
-            return request
-
-        if response.status == 408 or response.status == 502 or response.status == 503:
+        if response.status in [403, 408, 502, 503, 302]:
             ip_pool.report_baned_ip(this_res_proxy)
             request.meta['proxy'] = "http://" + ip_pool.get_ip()
             return request

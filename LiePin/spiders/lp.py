@@ -28,7 +28,6 @@ class LpSpider(scrapy.Spider):
         "DNT": "1",
         "User-Agent": random.choice(USER_AGENT_POOL),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
-        "Referer": 'https://www.liepin.com/zhaopin/?init=-1&headckid=ebb4af279a07d4be&fromSearchBtn=2&sfrom=click-pc_homepage-centre_searchbox-search_new&ckid=ebb4af279a07d4be&degradeFlag=0&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg~fA9rXquZc5IkJpXC-Ycixw&d_sfrom=search_fp&d_ckId=7cd3a89b67e7261f0646fe4114c38c34&d_curPage=0&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34&curPage=1',
         "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "zh-CN,zh;q=0.9",
     }
@@ -36,7 +35,7 @@ class LpSpider(scrapy.Spider):
     regSpace = re.compile(r'([\s\r\n\t])+')
 
     def start_requests(self):
-        base_url = 'https://www.liepin.com/zhaopin/?init=-1&headckid=10309442b4fc4250&fromSearchBtn=2&pubTime=1&dqs={city}&ckid=48be21f35417fec6&degradeFlag=0&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EV6MwPcZ2ne9zYObRj7X8Rg&d_sfrom=search_fp_nvbar&d_ckId=5bbcb19abb610f06d82310563dd69691&d_curPage=1000&d_pageSize=40&d_headId=7cd3a89b67e7261f0646fe4114c38c34'
+        base_url = "https://www.liepin.com/zhaopin/?init=-1&headckid=468f33e95eee9659&flushckid=1&fromSearchBtn=2&dqs={city}&ckid=8ee212dfe04606d9&sfrom=click-pc_homepage-centre_searchbox-search_new&key=&siTag=1B2M2Y8AsgTpgAmY7PhCfg%7EF5FSJAXvyHmQyODXqGxdVw&d_sfrom=search_fp&d_ckId=bee571934d780d9bcbd9a225720f8093&d_curPage=0&d_pageSize=40&d_headId=aeda655e5fe8976cbd21f04db0a14233"
         for city in city_code_list.values():
             yield Request(
                 url=base_url.format(city=city),
@@ -188,6 +187,8 @@ class LpSpider(scrapy.Spider):
         tag_a = response.xpath("//a[text()='下一页']")  # 获得下一页的a标签
         if not tag_a.xpath("./@class").extract():
             next_page_url = tag_a.xpath("./@href").extract_first()
+            if next_page_url is None:
+                yield
             yield Request(
                 url="https://www.liepin.com" + next_page_url,
                 headers=self.headers,
