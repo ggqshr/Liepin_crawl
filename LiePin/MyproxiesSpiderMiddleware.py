@@ -32,7 +32,11 @@ class MyproxiesSpiderMiddleware(object):
         # 用来输出状态码
         if response.status != 200:
             spider.logger.info(f'{response.status},{response.url}')
-        if response.status in [403, 408, 502, 503, 302]:
+        if response.status in [302]:
+            ip_pool.report_bad_net_ip(this_res_proxy)
+            request.meta['proxy'] = "http://" + ip_pool.get_ip()
+            return request
+        if response.status in [403, 408, 502, 503]:
             ip_pool.report_baned_ip(this_res_proxy)
             request.meta['proxy'] = "http://" + ip_pool.get_ip()
             return request

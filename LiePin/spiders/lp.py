@@ -3,6 +3,8 @@ import random
 
 import scrapy
 from scrapy import Request, Selector
+from scrapy.http import Response
+
 from LiePin.settings import COOKIES_STR
 import base64
 from LiePin import LiepinItem
@@ -92,7 +94,7 @@ class LpSpider(scrapy.Spider):
                     callback=self.parse,
                     priority=3,
                 )
-            else :
+            else:
                 all_area_url = []
                 for url in all_area:
                     this_url = url.xpath("./@href").extract_first()
@@ -197,7 +199,9 @@ class LpSpider(scrapy.Spider):
                 priority=2,
             )
 
-    def _parse_other(self, item, response):
+    def _parse_other(self, item, response: Response):
+        if "该职位已暂停招聘" in response.text:
+            yield item
         item['job_content'] = response.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
         item['job_content'] = self.replace_all_n(item['job_content'])
         item['company_address'] = response.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
