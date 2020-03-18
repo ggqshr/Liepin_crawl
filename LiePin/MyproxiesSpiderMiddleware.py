@@ -31,7 +31,7 @@ class MyproxiesSpiderMiddleware(object):
             raise IgnoreRequest
         # 用来输出状态码
         if response.status != 200:
-            spider.logger.info(f'{response.status},{response.url}')
+            spider.logger.debug(f'{response.status},{response.url}')
         if response.status in [302]:
             ip_pool.report_bad_net_ip(this_res_proxy)
             request.meta['proxy'] = "http://" + ip_pool.get_ip()

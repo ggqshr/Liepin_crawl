@@ -190,7 +190,7 @@ class LpSpider(scrapy.Spider):
         if not tag_a.xpath("./@class").extract():
             next_page_url = tag_a.xpath("./@href").extract_first()
             if next_page_url is None:
-                yield
+                return
             yield Request(
                 url="https://www.liepin.com" + next_page_url,
                 headers=self.headers,
