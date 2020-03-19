@@ -26,21 +26,26 @@ class MyproxiesSpiderMiddleware(object):
         request.meta["proxy"] = "http://" + ip_pool.get_ip()
 
     def process_response(self, request, response: Response, spider):
-        this_res_proxy = request.meta['proxy'].replace("http://", "")
-        if response.status == 404:
-            raise IgnoreRequest
-        # 用来输出状态码
-        if response.status != 200:
-            spider.logger.debug(f'{response.status},{response.url}')
-        if response.status in [302]:
-            ip_pool.report_bad_net_ip(this_res_proxy)
-            request.meta['proxy'] = "http://" + ip_pool.get_ip()
-            return request
-        if response.status in [403, 408, 502, 503]:
-            ip_pool.report_baned_ip(this_res_proxy)
-            request.meta['proxy'] = "http://" + ip_pool.get_ip()
-            return request
-        return response
+        try:
+            this_res_proxy = request.meta['proxy'].replace("http://", "")
+            if response.status == 404:
+                raise IgnoreRequest
+            # 用来输出状态码
+            if response.status != 200:
+                spider.logger.debug(f'{response.status},{response.url}')
+            if response.status in [302]:
+                ip_pool.report_bad_net_ip(this_res_proxy)
+                request.meta['proxy'] = "http://" + ip_pool.get_ip()
+                return request
+            if response.status in [403, 408, 502, 503]:
+                ip_pool.report_baned_ip(this_res_proxy)
+                request.meta['proxy'] = "http://" + ip_pool.get_ip()
+                return request
+            return response
+        except ReachMaxException as e:
+            spider.logger.info("reach max in lp")
+            spider.crawler.engine.close_spider(spider, f"reach day max number!!")
+            return
 
     def process_exception(self, request, exception, spider):
         if isinstance(exception, ReachMaxException):
