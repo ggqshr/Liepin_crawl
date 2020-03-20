@@ -200,7 +200,7 @@ class LpSpider(scrapy.Spider):
             )
 
     def _parse_other(self, item, response: Response):
-        if "该职位已暂停招聘" in response.text:
+        if "该职位已暂停招聘" in response.text or "您访问的页面不存在或已删除" in response.text:
             yield item
         item['job_content'] = response.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
         item['job_content'] = self.replace_all_n(item['job_content'])
