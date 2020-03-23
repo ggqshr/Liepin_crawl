@@ -45,12 +45,9 @@ class MyproxiesSpiderMiddleware(object):
         except ReachMaxException as e:
             spider.logger.info("reach max in lp")
             spider.crawler.engine.close_spider(spider, f"reach day max number!!")
-            return
+            return response
 
     def process_exception(self, request, exception, spider):
-        if isinstance(exception, ReachMaxException):
-            spider.crawler.engine.close_spider(spider, f"reach day max number!!")
-            return
         if isinstance(exception,
                       (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived)):
             this_bad_ip = request.meta['proxy'].replace("http://", "")
