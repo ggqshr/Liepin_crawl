@@ -2,6 +2,7 @@ import random
 
 import requests
 from scrapy import signals
+from scrapy.core.downloader.handlers.http11 import TunnelError
 from scrapy.exceptions import IgnoreRequest
 from scrapy.http import Response
 from twisted.internet.error import TCPTimedOutError, ConnectionRefusedError, TimeoutError, ConnectionLost
@@ -49,7 +50,8 @@ class MyproxiesSpiderMiddleware(object):
 
     def process_exception(self, request, exception, spider):
         if isinstance(exception,
-                      (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived)):
+                      (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived,
+                       TunnelError)):
             this_bad_ip = request.meta['proxy'].replace("http://", "")
             ip_pool.report_bad_net_ip(this_bad_ip)
         spider.logger.debug(f"{type(exception)} {exception},{request.url}")
