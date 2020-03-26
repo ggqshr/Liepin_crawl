@@ -45,8 +45,9 @@ class MyproxiesSpiderMiddleware(object):
             return response
         except ReachMaxException as e:
             spider.logger.info("reach max in lp")
-            spider.crawler.engine.close_spider(spider, f"reach day max number!!")
-            return response
+            res = Response(url=request.url,request=request)
+            res.meta['reach_max'] = True
+            return res
 
     def process_exception(self, request, exception, spider):
         if isinstance(exception,

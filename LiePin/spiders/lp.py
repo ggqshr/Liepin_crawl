@@ -1,23 +1,38 @@
 # -*- coding: utf-8 -*-
+import base64
 import random
+import re
+from functools import partial, wraps
 
 import scrapy
-from scrapy import Request, Selector
+from scrapy import Request
+from scrapy.exceptions import CloseSpider
 from scrapy.http import Response
 
-from LiePin.settings import COOKIES_STR
-import base64
 from LiePin import LiepinItem
-from functools import partial
-import requests
-import re
+from LiePin.settings import COOKIES_STR
 from LiePin.settings import USER_AGENT_POOL
-from LiePin.data5u import IPPOOL
 from LiePin.settings import city_code_list
 
 
 def extrat(response, xpath):
     return response.xpath(xpath).extract()
+
+
+def catch_reach_max(func):
+    """
+    再所有的回调执行前执行一段逻辑，检查是否今天的代理都用完了，如果用完了就关闭爬虫
+    :param func:
+    :return:
+    """
+    @wraps(func)
+    def ww(*args, **kwargs):
+        response = args[1]
+        if "reach_max" in response.meta.keys():
+            raise CloseSpider("reach_max_proxy")
+        return func(*args)
+
+    return ww
 
 
 class LpSpider(scrapy.Spider):
@@ -47,6 +62,7 @@ class LpSpider(scrapy.Spider):
                 # meta={"proxy": "http://" + random.choice(IPPOOL)}
             )
 
+    @catch_reach_max
     def parse_by_industry(self, response):
         """
         对原始的url按照不同的行业进行爬取，为了爬取更多的数据
@@ -77,6 +93,7 @@ class LpSpider(scrapy.Spider):
                 priority=3,
             )
 
+    @catch_reach_max
     def parse_by_city_area(self, response):
         """
         如果城市这一级别下还有许多数据，就按照城市的区来进行爬取
@@ -115,6 +132,7 @@ class LpSpider(scrapy.Spider):
                 priority=3,
             )
 
+    @catch_reach_max
     def parse_by_money(self, response):
         """
         按照工资数进行爬取
@@ -146,6 +164,7 @@ class LpSpider(scrapy.Spider):
                 priority=3,
             )
 
+    @catch_reach_max
     def parse(self, response):
 
         _extrat = partial(extrat, response)
@@ -175,15 +194,15 @@ class LpSpider(scrapy.Spider):
                         range(min([len(v) for v in item.values()]))]
 
         for link in all_data:
-            parse_other = partial(self._parse_other, LiepinItem(link))
             if re.findall(r"^/", link['link']) != []:
                 link['link'] = "https://www.liepin.com" + link['link']
             yield Request(
                 url=link['link'],
                 headers=self.headers,
-                callback=parse_other,
+                callback=self._parse_other,
                 dont_filter=True,
                 priority=3,
+                meta={"item": LiepinItem(link)}
             )
         # 如果下一页存在，就继续爬取下一页
         tag_a = response.xpath("//a[text()='下一页']")  # 获得下一页的a标签
@@ -199,7 +218,9 @@ class LpSpider(scrapy.Spider):
                 priority=2,
             )
 
-    def _parse_other(self, item, response: Response):
+    @catch_reach_max
+    def _parse_other(self, response: Response):
+        item = response.meta['item']
         if "该职位已暂停招聘" in response.text or "您访问的页面不存在或已删除" in response.text:
             yield item
         item['job_content'] = response.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
