@@ -19,6 +19,7 @@ import logging
 from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 from datetime import datetime
 import os
+from pathlib import Path
 
 BOT_NAME = 'LiePin'
 
@@ -167,7 +168,7 @@ MAIL_PORT = 465
 MAIL_USER = '942490944@qq.com'
 MAIL_PASS = 'ijmbixectujobeei'
 
-with open("lpcity_data.data", 'rb') as f:
+with open(Path(__file__).parent.joinpath("lpcity_data.data"), 'rb') as f:
     city_code_list = pickle.load(f)
 
 CLOSESPIDER_TIMEOUT = 169200
