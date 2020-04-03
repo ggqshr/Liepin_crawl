@@ -168,7 +168,7 @@ MAIL_PORT = 465
 MAIL_USER = '942490944@qq.com'
 MAIL_PASS = 'ijmbixectujobeei'
 
-with open(Path(__file__).parent.joinpath("lpcity_data.data"), 'rb') as f:
+with open(Path(__file__).parent.parent.joinpath("lpcity_data.data"), 'rb') as f:
     city_code_list = pickle.load(f)
 
 CLOSESPIDER_TIMEOUT = 169200
