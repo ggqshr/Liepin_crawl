@@ -35,17 +35,17 @@ class MyproxiesSpiderMiddleware(object):
             if response.status != 200:
                 spider.logger.debug(f'{response.status},{response.url}')
             if response.status in [302]:
-                ip_pool.report_bad_net_ip(this_res_proxy)
+                ip_pool.report_bad_ip(this_res_proxy)
                 request.meta['proxy'] = "http://" + ip_pool.get_ip()
                 return request
             if response.status in [403, 408, 502, 503]:
-                ip_pool.report_baned_ip(this_res_proxy)
+                ip_pool.report_ban_ip(this_res_proxy)
                 request.meta['proxy'] = "http://" + ip_pool.get_ip()
                 return request
             return response
         except ReachMaxException as e:
             spider.logger.info("reach max in lp")
-            res = Response(url=request.url,request=request)
+            res = Response(url=request.url, request=request)
             res.meta['reach_max'] = True
             return res
 
@@ -54,7 +54,7 @@ class MyproxiesSpiderMiddleware(object):
                       (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived,
                        TunnelError)):
             this_bad_ip = request.meta['proxy'].replace("http://", "")
-            ip_pool.report_bad_net_ip(this_bad_ip)
+            ip_pool.report_bad_ip(this_bad_ip)
         spider.logger.debug(f"{type(exception)} {exception},{request.url}")
         thisip = ip_pool.get_ip()
         request.meta['proxy'] = "http://" + thisip
