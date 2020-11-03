@@ -18,7 +18,7 @@ Twisted ~= 19.2.0
 ggq_proxy_pool ~= 0.2.1
 
 # D:\Project\crawl_project\Liepin_crawl\LiePin\settings.py: 14
-proxy_pool_redis ~= 0.0.5
+proxy_pool_redis
 
 # D:\Project\crawl_project\Liepin_crawl\LiePin\pipelines.py: 9
 pymongo ~= 3.8.0
