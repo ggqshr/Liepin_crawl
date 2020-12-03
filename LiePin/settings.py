@@ -152,13 +152,13 @@ configure_logging(install_root_handler=False)
 logging.basicConfig(
     level=logging.DEBUG,
     handlers=[
-        TimedRotatingFileHandler(filename='logs/LiePin.log', encoding='utf-8', when="D", interval=1)],
+        TimedRotatingFileHandler(filename='logs/LiePin.log', encoding='utf-8', when="D", interval=1,backupCount=3)],
     format='%(asctime)s %(filename)s [line:%(lineno)d] %(levelname)s %(message)s',
     datefmt='%a, %d %b %Y %H:%M:%S',
 )
 
 apiUrl = "http://api.xdaili.cn/xdaili-api/greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20196121637TQppQw&returnType=2&count=3"
-ip_pool = XunProxyPool(api_url=apiUrl,name='liepin',redis_host="47.94.45.55",redis_port=6379,redis_password="b7310",scan_timeout_ip=True)
+ip_pool = XunProxyPool(api_url=apiUrl,name='liepin',redis_host="47.94.45.55",redis_port=6379,redis_password="b7310",scan_timeout_ip=True,log_level=logging.INFO)
 RETRY_ENABLED = False
 
 # 和邮件相关
