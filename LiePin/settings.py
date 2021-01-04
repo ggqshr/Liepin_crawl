@@ -179,3 +179,5 @@ REDIRECT_ENABLED = False
 
 MONGODB_USER = "jason#619"
 MONGODB_PASSWORD = "jason#619"
+
+DUPEFILTER_CLASS = "scrapy.dupefilters.BaseDupeFilter"
