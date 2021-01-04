@@ -34,3 +34,7 @@ requests ~= 2.22.0
 
 # D:\Project\crawl_project\Liepin_crawl\LiePin\spiders\lpredis.py: 8
 scrapy_redis ~= 0.6.8
+
+pyyaml
+
+dataclasses
