@@ -27,3 +27,4 @@ class LiepinItem(scrapy.Item):
     company_size = scrapy.Field()
     job_content = scrapy.Field()
     company_industry = scrapy.Field()
+    job_age = scrapy.Field()

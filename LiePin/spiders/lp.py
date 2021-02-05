@@ -223,6 +223,7 @@ class LpSpider(scrapy.Spider):
         item = response.meta['item']
         if "该职位已暂停招聘" in response.text or "您访问的页面不存在或已删除" in response.text:
             yield item
+        item['job_age'] = response.xpath('(//div[@class="job-qualifications"]/span)[4]/text()').extract_first("年龄不限")
         item['job_content'] = response.xpath('//div[@class="content content-word"]')[0].xpath("./text()").extract()
         item['job_content'] = self.replace_all_n(item['job_content'])
         item['company_address'] = response.xpath('//ul[@class="new-compintro"]/li[3]/text()').extract()
