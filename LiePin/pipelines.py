@@ -15,7 +15,7 @@ LOCAL = "127.0.0.1"
 
 class LiepinPipeline(object):
     def __init__(self):
-        self.client = Client(host=REDIS_HOST,port=REDIS_PORT)
+        self.client = Client(host=REDIS_HOST,port=REDIS_PORT,password="b7310")
         if not self.client.exists("bf:liepin"):
             self.client.bfCreate("bf:liepin",0.00001,100000)
         self.conn = MongoClient(MONGODB_HOST if MODE != 'LOCAL' else LOCAL, MONGODB_PORT)
