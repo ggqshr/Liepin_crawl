@@ -141,7 +141,7 @@ USER_AGENT_POOL = [
 # SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 REDIS_HOST = "47.94.45.55"
-REDIS_PORT = 9879
+REDIS_PORT = 6379
 
 SCHEDULER_PERSIST = False
 
@@ -158,7 +158,7 @@ logging.basicConfig(
 )
 
 apiUrl = "http://api.xdaili.cn/xdaili-api/greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20196121637TQppQw&returnType=2&count=3"
-ip_pool = XunProxyPool(api_url=apiUrl,name='liepin',redis_host="47.94.45.55",redis_port=6379,redis_password="b7310",scan_timeout_ip=True,log_level=logging.INFO)
+ip_pool = XunProxyPool(api_url=apiUrl,name='liepin',redis_host="47.94.45.55",redis_port=6379,scan_timeout_ip=True,log_level=logging.INFO)
 RETRY_ENABLED = False
 
 # 和邮件相关
