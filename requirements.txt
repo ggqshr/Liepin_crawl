@@ -38,3 +38,5 @@ scrapy_redis ~= 0.6.8
 pyyaml
 
 dataclasses
+
+redisbloom
