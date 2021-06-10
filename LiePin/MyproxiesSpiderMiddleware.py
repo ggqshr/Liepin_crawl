@@ -45,7 +45,7 @@ class MyproxiesSpiderMiddleware(object):
             return response
         except ReachMaxException as e:
             spider.logger.info("reach max in lp")
-            res = Response(url=request.url, request=request)
+            res = Response(url=request.url, request=request) 
             res.meta['reach_max'] = True
             return res
 
