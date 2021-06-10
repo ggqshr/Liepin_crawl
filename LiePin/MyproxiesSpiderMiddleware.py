@@ -35,11 +35,11 @@ class MyproxiesSpiderMiddleware(object):
             if response.status != 200:
                 spider.logger.debug(f'{response.status},{response.url}')
             if response.status in [302]:
-                ip_pool.report_ban_ip(this_res_proxy)
+                ip_pool.report_bad_ip(this_res_proxy)
                 request.meta['proxy'] = "http://" + ip_pool.get_ip()
                 return request
             if response.status in [403, 408, 502, 503]:
-                ip_pool.report_ban_ip(this_res_proxy)
+                ip_pool.report_bad_ip(this_res_proxy)
                 request.meta['proxy'] = "http://" + ip_pool.get_ip()
                 return request
             return response
