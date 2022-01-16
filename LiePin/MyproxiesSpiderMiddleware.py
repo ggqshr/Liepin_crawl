@@ -11,7 +11,7 @@ from collections import Counter
 
 import LiePin.data5u as data
 from proxy_pool.ip_pool import ReachMaxException
-from .settings import apiUrl, ip_pool,proxy_auth
+from .settings import apiUrl, ip_pool
 
 
 class MyproxiesSpiderMiddleware(object):
