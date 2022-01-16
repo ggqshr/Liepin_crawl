@@ -24,11 +24,13 @@ class MyproxiesSpiderMiddleware(object):
         self.time_out_ip = []
 
     def process_request(self, request, spider):
-        request.meta["proxy"] = "http://" + ip_pool.get_ip()
+        proxy = ip_pool.get_ip()
+        request.meta["proxy"] = "http://" + proxy
+        request.meta['origin_proxy'] = proxy
 
     def process_response(self, request, response: Response, spider):
         try:
-            this_res_proxy = request.meta['proxy'].replace("http://", "")
+            this_res_proxy = request.meta['origin_proxy']
             if response.status == 404:
                 raise IgnoreRequest
             # 用来输出状态码
@@ -53,7 +55,7 @@ class MyproxiesSpiderMiddleware(object):
         if isinstance(exception,
                       (ConnectionRefusedError, TCPTimedOutError, TimeoutError, ConnectionLost, ResponseNeverReceived,
                        TunnelError)):
-            this_bad_ip = request.meta['proxy'].replace("http://", "")
+            this_bad_ip = request.meta['origin_proxy']
             ip_pool.report_bad_ip(this_bad_ip)
         spider.logger.debug(f"{type(exception)} {exception},{request.url}")
         thisip = ip_pool.get_ip()
