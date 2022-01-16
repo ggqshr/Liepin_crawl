@@ -11,7 +11,7 @@
 from logging.config import dictConfig, fileConfig
 
 import yaml
-from proxy_pool_redis import XunProxyPool
+from proxy_pool_redis import XunProxyPool,KuaiProxyPool
 from logging import INFO, DEBUG
 import pickle
 from scrapy.utils.log import configure_logging
@@ -158,7 +158,7 @@ logging.basicConfig(
 )
 
 apiUrl = "http://api.xdaili.cn/xdaili-api/greatRecharge/getGreatIp?spiderId=2eeedc14918546f087abcddafd5ee37d&orderno=YZ20196121637TQppQw&returnType=2&count=3"
-ip_pool = XunProxyPool(api_url=apiUrl,name='liepin',redis_host=REDIS_HOST,redis_port=REDIS_PORT,redis_password="b7310",scan_timeout_ip=True,log_level=logging.INFO,scan_time_span=100)
+ip_pool = KuaiProxyPool(api_url=apiUrl,name='liepin',redis_host=REDIS_HOST,redis_port=REDIS_PORT,redis_password="b7310",scan_timeout_ip=True,log_level=logging.INFO,scan_time_span=100)
 RETRY_ENABLED = False
 
 # 和邮件相关
