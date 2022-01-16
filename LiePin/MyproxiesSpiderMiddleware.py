@@ -11,7 +11,7 @@ from collections import Counter
 
 import LiePin.data5u as data
 from proxy_pool.ip_pool import ReachMaxException
-from .settings import apiUrl, ip_pool
+from .settings import apiUrl, ip_pool,proxy_auth
 
 
 class MyproxiesSpiderMiddleware(object):
@@ -25,8 +25,11 @@ class MyproxiesSpiderMiddleware(object):
 
     def process_request(self, request, spider):
         proxy = ip_pool.get_ip()
-        request.meta["proxy"] = "http://" + proxy
+        request.meta["proxy"] = self._format_proxy(proxy)
         request.meta['origin_proxy'] = proxy
+    
+    def _format_proxy(self,proxy):
+        return "http://%s@%s" % (proxy_auth,proxy)
 
     def process_response(self, request, response: Response, spider):
         try:
@@ -38,11 +41,11 @@ class MyproxiesSpiderMiddleware(object):
                 spider.logger.debug(f'{response.status},{response.url}')
             if response.status in [302]:
                 ip_pool.report_bad_ip(this_res_proxy)
-                request.meta['proxy'] = "http://" + ip_pool.get_ip()
+                request.meta['proxy'] = self._format_proxy(ip_pool.get_ip())
                 return request
             if response.status in [403, 408, 502, 503]:
                 ip_pool.report_bad_ip(this_res_proxy)
-                request.meta['proxy'] = "http://" + ip_pool.get_ip()
+                request.meta['proxy'] = self._format_proxy(ip_pool.get_ip())
                 return request
             return response
         except ReachMaxException as e:
@@ -59,5 +62,5 @@ class MyproxiesSpiderMiddleware(object):
             ip_pool.report_bad_ip(this_bad_ip)
         spider.logger.debug(f"{type(exception)} {exception},{request.url}")
         thisip = ip_pool.get_ip()
-        request.meta['proxy'] = "http://" + thisip
+        request.meta['proxy'] = self._format_proxy(ip_pool.get_ip())
         return request
