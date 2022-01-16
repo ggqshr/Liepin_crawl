@@ -29,7 +29,7 @@ class MyproxiesSpiderMiddleware(object):
         request.meta['origin_proxy'] = proxy
     
     def _format_proxy(self,proxy):
-        return "http://%s@%s" % (proxy_auth,proxy)
+        return "http://%s" % (proxy)
 
     def process_response(self, request, response: Response, spider):
         try:
