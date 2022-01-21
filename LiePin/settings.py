@@ -157,7 +157,7 @@ logging.basicConfig(
     datefmt='%a, %d %b %Y %H:%M:%S',
 )
 
-apiUrl = "http://dps.kdlapi.com/api/getdps/?orderid=914233167437767&num=3&pt=1&dedup=1&format=json&sep=1"
+apiUrl = "http://dps.kdlapi.com/api/getdps/?orderid=914277098843178&num=3&pt=1&dedup=1&format=json&sep=1"
 ip_pool = KuaiProxyPool(api_url=apiUrl,name='liepin',redis_host=REDIS_HOST,redis_port=REDIS_PORT,redis_password="b7310",scan_timeout_ip=True,log_level=logging.INFO,scan_time_span=100)
 RETRY_ENABLED = False
 
